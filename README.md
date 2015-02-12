@@ -25,7 +25,7 @@ Meteor.log.fatal(message, data, userId);
 Meteor.log.warn(message, data, userId);
 ```
 
-#### Register new adapter [`Server` & `Client`]
+##### Register new adapter [`Server` & `Client`]
 ```javascript
 /*
   name        {String}    - Adapter name
@@ -51,7 +51,7 @@ var init = function(){
 Meteor.log.add('Mongo', emitter, init, true);
 ```
 
-#### Enable/disable and set settings adapter
+##### Enable/disable and set settings adapter [`Server` & `Client`]
 ```javascript
 /*
   name    {String} - Adapter name
