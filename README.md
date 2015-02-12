@@ -11,6 +11,11 @@ meteor add ostrio:logger
 
 Usage
 ========
+To use this package you need install an adapter:
+ - [File](https://atmospherejs.com/ostrio/loggerfile) - Simply store application logs into file within ostrio:logger package;
+ - [Mongo](https://atmospherejs.com/ostrio/loggermongo) - Simply store application logs into MongoDB within ostrio:logger package;
+ - [Console](https://atmospherejs.com/ostrio/loggerconsole) - Simply output Client application logs into Server's console within ostrio:logger package.
+
 ##### Log [`Server` & `Client`]
 ```javascript
 /*
