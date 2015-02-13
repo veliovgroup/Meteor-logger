@@ -1,7 +1,7 @@
 Package.describe({
   name: 'ostrio:logger',
-  version: '0.0.1',
-  summary: 'Meteor isomorphic logger',
+  version: '0.0.2',
+  summary: 'Meteor isomorphic logger driver',
   git: 'https://github.com/VeliovGroup/Meteor-logger',
   documentation: 'README.md'
 });

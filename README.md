@@ -1,6 +1,6 @@
-Meteor isomorphic logger
+Meteor isomorphic logger driver
 ========
-Logger package to be used with any adapter, ex.: MongoDB, Log Files, Server and/or Client console. 
+Logger package to be used with any adapter, ex.: [MongoDB](https://atmospherejs.com/ostrio/loggermongo), [Log files](https://atmospherejs.com/ostrio/loggerfile), Server and/or Client [console](https://atmospherejs.com/ostrio/loggerconsole). 
 With range of settings, like Server and/or Client execution, filters by log levels (types, like `warn`, `info`, etc.).
 
 Install:
@@ -28,6 +28,8 @@ Meteor.log.debug(message, data, userId);
 Meteor.log.error(message, data, userId);
 Meteor.log.fatal(message, data, userId);
 Meteor.log.warn(message, data, userId);
+Meteor.log.trace(message, data, userId);
+Meteor.log._(message, data, userId); //--> Shortcut for logging without message, e.g.: simple plain log
 ```
 
 ##### Register new adapter [`Server` & `Client`]
@@ -36,7 +38,7 @@ Meteor.log.warn(message, data, userId);
   name        {String}    - Adapter name
   emitter     {Function}  - Function called on Meteor.log...
   init        {Function}  - Adapter initialization function
-  denyClient  {Boolean}   - Strictly deny execution on client, only pass via Meteor.methons
+  denyClient  {Boolean}   - Strictly deny execution on client, only pass via Meteor.methods
  */
 Meteor.log.add(name, emitter, init, denyClient);
 
@@ -56,7 +58,7 @@ var init = function(){
 Meteor.log.add('Mongo', emitter, init, true);
 ```
 
-##### Enable/disable and set settings adapter [`Server` & `Client`]
+##### Enable/disable adapter and set it's settings [`Server` & `Client`]
 ```javascript
 /*
   name    {String} - Adapter name

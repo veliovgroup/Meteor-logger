@@ -3,7 +3,7 @@ coffeescript@1.0.5
 ejson@1.0.5
 json@1.0.2
 meteor@1.1.4
-ostrio:logger@0.0.1
+ostrio:logger@0.0.2
 reactive-dict@1.0.5
 session@1.0.5
 tracker@1.0.5
