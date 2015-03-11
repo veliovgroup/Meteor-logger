@@ -100,8 +100,8 @@ class Logger
 
     if Meteor.isServer
       methFunc = {}
-      methFunc["logger_emit_#{name}"] = (level, message, data) =>
-        emitter level, message, data
+      methFunc["logger_emit_#{name}"] = (level, message, data, userId) =>
+        emitter level, message, data, userId
       
       Meteor.methods methFunc
 
