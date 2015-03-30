@@ -49,6 +49,8 @@ class Logger
           undefined
         else
           em.emitter level, message, data, userId
+          
+    return undefined
 
   ###
   @function
