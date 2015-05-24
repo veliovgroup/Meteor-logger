@@ -1,8 +1,10 @@
 ###
-@description Add 'ostrioLoggerUserId' Session value, to use in client when Meteor.userId() or this.userId isn't available
+@description Add 'ostrioLoggerUserId' reactiveVar value, to use in client when Meteor.userId() or this.userId isn't available
 ###
 if Meteor.isClient
-  Session.set "ostrioLoggerUserId", Meteor.userId()
+  ostrioLoggerUserId = new ReactiveVar ''
+  Tracker.autorun ->
+    ostrioLoggerUserId.set Meteor.userId()
 
 ###
 @class
@@ -34,7 +36,7 @@ class Logger
         if typeof userId == "undefined" or !userId
           userId = this.userId
 
-        userId = if Meteor.isClient then Session.get("ostrioLoggerUserId") else userId
+        userId = if Meteor.isClient then ostrioLoggerUserId.get() else userId
 
         if Meteor.isClient and em.denyClient is true
           Meteor.call em.method, level, message, data, userId
@@ -103,6 +105,11 @@ class Logger
     if Meteor.isServer
       methFunc = {}
       methFunc["logger_emit_#{name}"] = (level, message, data, userId) =>
+        check level, String
+        check message, Match.Optional String
+        check data, Match.Any
+        check userId, Match.Any
+
         emitter level, message, data, userId
       
       Meteor.methods methFunc

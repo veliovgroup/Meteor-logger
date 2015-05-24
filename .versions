@@ -1,10 +1,6 @@
-base64@1.0.3
 coffeescript@1.0.6
-ejson@1.0.6
-json@1.0.3
-meteor@1.1.5
-ostrio:logger@0.0.4
-reactive-dict@1.1.0
-session@1.1.0
-tracker@1.0.6
+meteor@1.1.6
+ostrio:logger@0.0.5
+reactive-var@1.0.5
+tracker@1.0.7
 underscore@1.0.3
