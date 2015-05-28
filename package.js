@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:logger',
-  version: '0.0.5',
+  version: '0.0.6',
   summary: 'Meteor isomorphic logger driver',
   git: 'https://github.com/VeliovGroup/Meteor-logger',
   documentation: 'README.md'
@@ -10,5 +10,5 @@ Package.onUse(function(api) {
   api.versionsFrom('1.0');
   api.use('coffeescript', ['client', 'server']);
   api.use(['reactive-var', 'tracker'], 'client');
-  api.addFiles('ostrio:logger.coffee', ['client', 'server']);
+  api.addFiles('logger.coffee', ['client', 'server']);
 });

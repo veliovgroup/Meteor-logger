@@ -1,10 +1,13 @@
 ###
-@description Add 'ostrioLoggerUserId' reactiveVar value, to use in client when Meteor.userId() or this.userId isn't available
+@description Add `userId` reactiveVar value, to use in client when Meteor.userId() or this.userId isn't available
 ###
 if Meteor.isClient
-  ostrioLoggerUserId = new ReactiveVar ''
-  Tracker.autorun ->
-    ostrioLoggerUserId.set Meteor.userId()
+  if Package['accounts-base']
+    userId = new ReactiveVar ''
+    Tracker.autorun ->
+      userId.set Meteor.userId()
+  else
+    userId = new ReactiveVar null
 
 ###
 @class
@@ -32,11 +35,14 @@ class Logger
   logit: (level, message, data, userId) -> 
     for i, em of Logger::_emitters
       if Logger::_rules[em.name] and Logger::_rules[em.name].allow.indexOf('*') isnt -1 or Logger::_rules[em.name] and Logger::_rules[em.name].allow.indexOf(level) isnt -1
-          
-        if typeof userId == "undefined" or !userId
-          userId = this.userId
+        
+        if Package['accounts-base']
+          if typeof userId == "undefined" or !userId
+            userId = this.userId
 
-        userId = if Meteor.isClient then ostrioLoggerUserId.get() else userId
+          userId = if Meteor.isClient then userId.get() else userId
+        else
+          userId = null
 
         if Meteor.isClient and em.denyClient is true
           Meteor.call em.method, level, message, data, userId
