@@ -38,11 +38,10 @@ class Logger
         
         if Package['accounts-base']
           if typeof userId == "undefined" or !userId
-            userId = this.userId
+            userId = if Meteor.isClient then @userId.get() else userId
 
-          userId = if Meteor.isClient then userId.get() else userId
         else
-          userId = null
+          userId = userId or null
 
         if Meteor.isClient and em.denyClient is true
           Meteor.call em.method, level, message, data, userId
