@@ -29,33 +29,34 @@ class Logger
   @param level    {String} - Log level Accepts 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', 'LOG' and '*'
   @param message  {String} - Text human-readable message
   @param data     {Object} - [optional] Any additional info as object
-  @param userId   {Object} - [optional] Current user id
+  @param userId   {String} - [optional] Current user id
   @description Pass log's data to Server or/and Client
   ###
-  logit: (level, message, data, userId) -> 
+  logit: (level, message, data, user) -> 
     for i, em of Logger::_emitters
       if Logger::_rules[em.name] and Logger::_rules[em.name].allow.indexOf('*') isnt -1 or Logger::_rules[em.name] and Logger::_rules[em.name].allow.indexOf(level) isnt -1
         
         if Package['accounts-base']
-          if typeof userId == "undefined" or !userId
-            userId = if Meteor.isClient then @userId.get() else userId
-
+          if typeof user == "undefined" or !user
+            uid = if Meteor.isClient then userId.get() else user
+          else
+            uid = user
         else
-          userId = userId or null
+          uid = user or null
 
         if Meteor.isClient and em.denyClient is true
-          Meteor.call em.method, level, message, data, userId
+          Meteor.call em.method, level, message, data, uid
           undefined
         else if Logger::_rules[em.name].client is true and Logger::_rules[em.name].server is true and em.denyClient is false
-          em.emitter level, message, data, userId
+          em.emitter level, message, data, uid
           if Meteor.isClient
-            Meteor.call em.method, level, message, data, userId
+            Meteor.call em.method, level, message, data, uid
             undefined
         else if Meteor.isClient and Logger::_rules[em.name].client is false and Logger::_rules[em.name].server is true
-          Meteor.call em.method, level, message, data, userId
+          Meteor.call em.method, level, message, data, uid
           undefined
         else
-          em.emitter level, message, data, userId
+          em.emitter level, message, data, uid
           
     return undefined
 
