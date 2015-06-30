@@ -19,7 +19,7 @@ To use this package you need to install an adapter:
 ##### Log [`Server` & `Client`]
 ```javascript
 /*
-  message {String} - Any text message
+  message {String|Number} - Any text message
   data    {Object} - [optional] Any additional info as object
   userId  {String} - [optional] Current user id
  */
@@ -30,6 +30,9 @@ Meteor.log.fatal(message, data, userId);
 Meteor.log.warn(message, data, userId);
 Meteor.log.trace(message, data, userId);
 Meteor.log._(message, data, userId); //--> Shortcut for logging without message, e.g.: simple plain log
+
+/* Use with throw */
+throw Meteor.log.error(message, data, userId);
 ```
 
 ##### Register new adapter [`Server` & `Client`]

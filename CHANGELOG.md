@@ -1,5 +1,8 @@
 Changelog
 =========
+ - [[`v1.0.0`](https://github.com/VeliovGroup/Meteor-logger/releases/tag/v1.0.0)] *07/01/2015*
+   - First argument now can be *String* or *Number*
+   - Now `Meteor.log[type]` can be used with `throw`, and returns error details
  - [[`v0.0.8`](https://github.com/VeliovGroup/Meteor-logger/releases/tag/v0.0.8)] *06/07/2015*
    - Fix issue `TypeError: Cannot read property 'get' of undefined`
  - [[`v0.0.7`](https://github.com/VeliovGroup/Meteor-logger/releases/tag/v0.0.7)] *05/29/2015*

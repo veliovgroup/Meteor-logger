@@ -58,7 +58,21 @@ class Logger
         else
           em.emitter level, message, data, uid
           
-    return undefined
+    return @exception.call
+      level: level
+      error: level
+      reason: message
+      message: message
+      details: data
+      data: data
+      user: uid
+      userId: uid
+
+
+  exception: () ->
+    @toString = ->
+      "[#{@reason}] \r\nLevel: #{@level}; \r\nDetails: #{JSON.stringify(Meteor.log.antiCircular(@data))}; \r\nUserId: #{@userId};"
+    return @
 
   ###
   @function
@@ -112,7 +126,7 @@ class Logger
       methFunc = {}
       methFunc["logger_emit_#{name}"] = (level, message, data, userId) =>
         check level, String
-        check message, Match.Optional String
+        check message, Match.Optional Match.OneOf Number, String, null
         check data, Match.Any
         check userId, Match.Any
 
