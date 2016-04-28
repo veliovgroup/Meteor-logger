@@ -81,7 +81,7 @@ var init = function(){
 log.add('AdapterName', emitter, init, true);
 ```
 
-##### Enable/disable adapter and set it's settings [*Isomorphic*]
+##### Enable/disable adapter and set its settings [*Isomorphic*]
 ```javascript
 /*
  * name    {String} - Adapter name
