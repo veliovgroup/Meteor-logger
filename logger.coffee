@@ -1,8 +1,7 @@
 _inst = 0
 ###
-@class
-@name Logger
-@description Simple logger class, which passes incoming data to Client and Server via method
+@class Logger
+@summary Extend-able Logger class
 ###
 class Logger
   userId: new ReactiveVar null
@@ -17,16 +16,15 @@ class Logger
     @_rules = {}
 
   ###
-  @function
-  @class Logger
-  @name  log
+  @memberOf Logger
+  @name _log
   @param level    {String} - Log level Accepts 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', 'LOG' and '*'
   @param message  {String} - Text human-readable message
   @param data     {Object} - [optional] Any additional info as object
   @param userId   {String} - [optional] Current user id
-  @description Pass log's data to Server or/and Client
+  @summary Pass log's data to Server or/and Client
   ###
-  logit: (level, message, data = {}, user) =>
+  _log: (level, message, data = {}, user) =>
     uid = user or @userId.get()
     for i, em of @_emitters
       if @_rules[em.name] and @_rules[em.name].allow.indexOf('*') isnt -1 or @_rules[em.name] and @_rules[em.name].allow.indexOf(level) isnt -1
@@ -35,7 +33,7 @@ class Logger
           if _.isString data
             _data = data
             data = {data: _data}
-          data.stackTrace = @getStackTrace()
+          data.stackTrace = @_getStackTrace()
 
         if Meteor.isClient and em.denyClient is true
           Meteor.call em.method, level, message, data, uid
@@ -48,25 +46,32 @@ class Logger
         else
           em.emitter level, message, data, uid
           
-    return @exception.call
+    return new @_message
       level: level
       error: level
       reason: message
+      errorType: level
       message: message
       details: data
       data: data
       user: uid
       userId: uid
 
-
-  exception: ->
-    @toString = -> "[#{@reason}] \r\nLevel: #{@level}; \r\nDetails: #{JSON.stringify(Logger::antiCircular(@data))}; \r\nUserId: #{@userId};"
-    return @
+  ###
+  @memberOf Logger
+  @name _message
+  @class LoggerMessage
+  @param data {Object}
+  @summary Construct message object, ready to be thrown and stringified
+  ###
+  _message: class LoggerMessage
+    constructor: (data) ->
+      {@level, @error, @reason, @message, @details, @data, @user, @userId} = data
+      @toString = -> "[#{@reason}] \r\nLevel: #{@level}; \r\nDetails: #{JSON.stringify(Logger::antiCircular(@data))}; \r\nUserId: #{@userId};"
 
   ###
-  @function
-  @class Logger
-  @name  rule
+  @memberOf Logger
+  @name rule
   @param name    {String} - Adapter name
   @param options {Object} - Settings object, accepts next properties:
             enable {Boolean} - Enable/disable adapter
@@ -76,7 +81,7 @@ class Logger
                                default: ['*'] - Accept all
             client {Boolean} - Allow execution on Client
             server {Boolean} - Allow execution on Server
-  @description Enable/disable adapter and set it's settings
+  @summary Enable/disable adapter and set it's settings
   ###
   rule: (name, options) =>
     if !name or !options or !options.enable
@@ -91,16 +96,16 @@ class Logger
       allow: if options.allow || options.filter then options.allow || options.filter else ['*']
       client: if options.client then options.client else false
       server: if options.server then options.server else true
+    return
 
   ###
-  @function
-  @class Logger
-  @name  add
+  @memberOf Logger
+  @name add
   @param name        {String}    - Adapter name
   @param emitter     {Function}  - Function called on Meteor.log...
   @param init        {Function}  - Adapter initialization function
   @param denyClient  {Boolean}   - Strictly deny execution on client, only pass via Meteor.methods
-  @description Register new adapter to be used within ostrio:logger package
+  @summary Register new adapter to be used within ostrio:logger package
   ###
   add: (name, emitter, init, denyClient = false) =>
     init and init()
@@ -119,36 +124,35 @@ class Logger
         check userId, Match.Optional Match.OneOf String, null
         emitter level, message, data, (userId or @userId)
       Meteor.methods method
+    return
 
   ###
-  @function
-  @class Logger
-  @name  info; debug; error; fatal; warn; trace; _
+  @memberOf Logger
+  @name info; debug; error; fatal; warn; trace; _
   @param message {String} - Any text message
   @param data    {Object} - [optional] Any additional info as object
   @param userId  {String} - [optional] Current user id
-  @description Functions below is shortcuts for logit() method
+  @summary Functions below is shortcuts for _log() method
   ###
-  info: (message, data, userId) -> @logit "INFO", message, data, userId
-  debug: (message, data, userId) -> @logit "DEBUG", message, data, userId
-  error: (message, data, userId) -> @logit "ERROR", message, data, userId
-  fatal: (message, data, userId) -> @logit "FATAL", message, data, userId
-  warn: (message, data, userId) -> @logit "WARN", message, data, userId
-  trace: (message, data, userId) -> @logit "TRACE", message, data, userId
-  log: (message, data, userId) -> @logit "LOG", message, data, userId
-  _: (message, data, userId) -> @logit "LOG", message, data, userId
+  info: (message, data, userId) -> @_log "INFO", message, data, userId
+  debug: (message, data, userId) -> @_log "DEBUG", message, data, userId
+  error: (message, data, userId) -> @_log "ERROR", message, data, userId
+  fatal: (message, data, userId) -> @_log "FATAL", message, data, userId
+  warn: (message, data, userId) -> @_log "WARN", message, data, userId
+  trace: (message, data, userId) -> @_log "TRACE", message, data, userId
+  log: (message, data, userId) -> @_log "LOG", message, data, userId
+  _: (message, data, userId) -> @_log "LOG", message, data, userId
 
   ###
-  @function
-  @class Logger
-  @name  antiCircular
+  @memberOf Logger
+  @name antiCircular
   @param data {Object} - Circular or any other object which needs to be non-circular
   ###
   antiCircular: (obj) ->
     _cache = [];
     _wrap = (obj) ->
       for v, k of obj
-        if typeof v is "object" and v isnt null 
+        if typeof v is "object" and v isnt null
           if _cache.indexOf(v) isnt -1
             obj[k] = "[Circular]"
             return undefined
@@ -158,11 +162,11 @@ class Logger
     return obj
 
   ###
-  @function
-  @class Logger
-  @name  getStackTrace
+  @memberOf Logger
+  @name _getStackTrace
+  @summary Prepare stack trace message
   ###
-  getStackTrace: ->
+  _getStackTrace: ->
     obj = {}
-    Error.captureStackTrace obj, @getStackTrace
+    Error.captureStackTrace obj, @_getStackTrace
     return obj.stack
