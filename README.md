@@ -100,7 +100,7 @@ log.add('AdapterName', emitter, init, true);
 log.rule('AdapterName', {
   enable: true,
   filter: ['ERROR', 'FATAL', 'WARN'],
-  client: false, /* This allows to call, but not execute on Client */
+  client: false, /* Allow to call, but not execute on Client */
   server: true   /* Calls from client will be executed on Server */
 });
 ```
