@@ -27,25 +27,25 @@ class Logger
   _log: (level, message, data = {}, user) =>
     uid = user or @userId.get()
     for i, em of @_emitters
-      if @_rules[em.name] and @_rules[em.name].allow.indexOf('*') isnt -1 or @_rules[em.name] and @_rules[em.name].allow.indexOf(level) isnt -1
+      if @_rules?[em.name] and @_rules[em.name].enable is true
+        if @_rules[em.name].allow.indexOf('*') isnt -1 or @_rules[em.name] and @_rules[em.name].allow.indexOf(level) isnt -1
+          if level is "TRACE"
+            if _.isString data
+              _data = data
+              data = {data: _data}
+            data.stackTrace = @_getStackTrace()
 
-        if level is "TRACE"
-          if _.isString data
-            _data = data
-            data = {data: _data}
-          data.stackTrace = @_getStackTrace()
-
-        if Meteor.isClient and em.denyClient is true
-          Meteor.call em.method, level, message, data, uid
-        else if @_rules[em.name].client is true and @_rules[em.name].server is true and em.denyClient is false
-          em.emitter level, message, data, uid
-          if Meteor.isClient
+          if Meteor.isClient and em.denyClient is true
             Meteor.call em.method, level, message, data, uid
-        else if Meteor.isClient and @_rules[em.name].client is false and @_rules[em.name].server is true
-          Meteor.call em.method, level, message, data, uid
-        else
-          em.emitter level, message, data, uid
-          
+          else if @_rules[em.name].client is true and @_rules[em.name].server is true and em.denyClient is false
+            em.emitter level, message, data, uid
+            if Meteor.isClient
+              Meteor.call em.method, level, message, data, uid
+          else if Meteor.isClient and @_rules[em.name].client is false and @_rules[em.name].server is true
+            Meteor.call em.method, level, message, data, uid
+          else
+            em.emitter level, message, data, uid
+
     return new @_message
       level: level
       error: level
@@ -73,29 +73,39 @@ class Logger
   @memberOf Logger
   @name rule
   @param name    {String} - Adapter name
-  @param options {Object} - Settings object, accepts next properties:
-            enable {Boolean} - Enable/disable adapter
-            filter {Array}   - Array of strings, accepts: 
-                               'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', 'LOG' and '*'
-                               in lowercase or uppercase
-                               default: ['*'] - Accept all
-            client {Boolean} - Allow execution on Client
-            server {Boolean} - Allow execution on Server
+  @param options {Object} - Settings object
+         options.enable {Boolean} - Enable/disable adapter
+         options.filter {Array}   - Array of strings, accepts: 
+                                   'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', 'LOG' and '*'
+                                   in lowercase or uppercase
+                                   default: ['*'] - Accept all
+         options.client {Boolean} - Allow execution on Client
+         options.server {Boolean} - Allow execution on Server
   @summary Enable/disable adapter and set it's settings
   ###
   rule: (name, options) =>
-    if !name or !options or !options.enable
-      throw new Meteor.Error '500', '"name", "options" and "options.enable" is require on Logger.rule(), when creating rule for "' + name + '"'
+    check name, String
+    check options, {
+      enable: Boolean
+      client: Match.Optional Boolean
+      server: Match.Optional Boolean
+      filter: Match.Optional [String]
+    }
 
-    if options.allow
-      for k of options.allow
-        options.allow[k] = options.allow[k].toUpperCase()
+    if options.filter
+      for rule in options.filter
+        rule = rule.toUpperCase()
 
-    @_rules[name] = 
+    options.filter ?= ['*']
+    options.client ?= false
+    options.server ?= true
+    options.enable ?= true
+
+    @_rules[name] =
       enable: options.enable
-      allow: if options.allow || options.filter then options.allow || options.filter else ['*']
-      client: if options.client then options.client else false
-      server: if options.server then options.server else true
+      allow:  options.filter
+      client: options.client
+      server: options.server
     return
 
   ###
