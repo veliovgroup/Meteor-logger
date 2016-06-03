@@ -138,7 +138,7 @@ class Logger
 
   ###
   @memberOf Logger
-  @name info; debug; error; fatal; warn; trace; _
+  @name info; debug; error; fatal; warn; trace; log; _
   @param message {String} - Any text message
   @param data    {Object} - [optional] Any additional info as object
   @param userId  {String} - [optional] Current user id
