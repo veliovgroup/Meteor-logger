@@ -162,7 +162,8 @@ class Logger {
       name: name,
       emitter: emitter,
       method: `${this.prefix}_logger_emit_${name}`,
-      denyClient: denyClient
+      denyClient: denyClient,
+      denyServer: denyServer
     });
 
     if (Meteor.isServer) {

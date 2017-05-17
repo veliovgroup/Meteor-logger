@@ -22,7 +22,7 @@ html-tools@1.0.11
 htmljs@1.0.11
 id-map@1.0.9
 jquery@1.11.10
-local-test:ostrio:logger@2.0.0
+local-test:ostrio:logger@2.0.1
 logging@1.1.17
 meteor@1.6.1
 minimongo@1.0.23
@@ -33,7 +33,7 @@ mongo-id@1.0.6
 npm-mongo@2.2.24
 observe-sequence@1.0.16
 ordered-dict@1.0.9
-ostrio:logger@2.0.0
+ostrio:logger@2.0.1
 promise@0.8.8
 random@1.0.10
 reactive-var@1.0.11
