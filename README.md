@@ -1,7 +1,16 @@
 Isomorphic logging driver
 ========
-Logger package to be used with any adapter, ex.: [MongoDB](https://atmospherejs.com/ostrio/loggermongo), [Log files](https://atmospherejs.com/ostrio/loggerfile), Server and/or Client [console](https://atmospherejs.com/ostrio/loggerconsole). 
-With range of settings, like Server and/or Client execution, filters by log levels (types, like `warn`, `info`, etc.).
+To use this package install an adapter *separately*:
+ - [File](https://atmospherejs.com/ostrio/loggerfile) - Store application log messages into the file (FS), log rotation included;
+ - [Mongo](https://atmospherejs.com/ostrio/loggermongo) - Store application log messages into MongoDB;
+ - [Console](https://atmospherejs.com/ostrio/loggerconsole) - Print Client's application log messages to Server's console, messages colorized for better readability.
+
+Features:
+ - 100% tests coverage;
+ - Flexible log level filters, ex: write `FATAL`, `ERROR`, and `WARN` to file, `DEBUG` to console, and all other to MongoDB;
+ - `userId` is automatically passed and logged if logged data is associated with logged-in user;
+ - Pass logs from *Client* to *Server*;
+ - Catch all browser's errors.
 
 Install:
 ========
@@ -9,16 +18,17 @@ Install:
 meteor add ostrio:logger
 ```
 
+ES6 Import:
+========
+```jsx
+import { Logger } from 'meteor/ostrio:logger';
+```
+
 Usage
 ========
-To use this package install an adapter *separately*:
- - [File](https://atmospherejs.com/ostrio/loggerfile) - Store application log messages into file (FS);
- - [Mongo](https://atmospherejs.com/ostrio/loggermongo) - Store application log messages into MongoDB;
- - [Console](https://atmospherejs.com/ostrio/loggerconsole) - Print Client's application log messages to Server's console, messages colorized for better readability.
-
-##### Logger [*Isomorphic*]
-```javascript
-this.log = new Logger();
+### Logger [*Isomorphic*]
+```jsx
+const log = new Logger();
 
 /* Activate adapters with default settings */
 /* meteor add ostrio:loggerfile */
@@ -39,50 +49,51 @@ log.error(message, data, userId);
 log.fatal(message, data, userId);
 log.warn(message, data, userId);
 log.trace(message, data, userId);
-log._(message, data, userId); //--> Plain log without level
+log._(message, data, userId); //--> Plain shortcut
 
 /* Use with throw */
 throw log.error(message, data, userId);
 ```
 
-##### Catch-all Client's errors example: [*CLIENT*]
-```javascript
+### Catch-all Client's errors example: [*CLIENT*]
+```jsx
 /* Store original window.onerror */
-var _WoE = window.onerror;
+const _GlobalErrorHandler = window.onerror;
 
-window.onerror = function(msg, url, line) {
+window.onerror = (msg, url, line) => {
   log.error(msg, {file: url, onLine: line});
-  if (_WoE) {
-    _WoE.apply(this, arguments);
+  if (_GlobalErrorHandler) {
+    _GlobalErrorHandler.apply(this, arguments);
   }
 };
 ```
 
-##### Register new adapter [*Isomorphic*]
-```javascript
+### Register new adapter [*Isomorphic*]
+```jsx
 /* Emitter function
  * name        {String}    - Adapter name
  * emitter     {Function}  - Function called on Meteor.log...
  * init        {Function}  - Adapter initialization function
  * denyClient  {Boolean}   - Strictly deny execution on client
- * Example: log.add(name, emitter, init, denyClient);
+ * denyServer  {Boolean}   - Strictly deny execution on server
+ * Example: log.add(name, emitter, init, denyClient, denyServer);
  */
 
-var emitter = function(level, message, data, userId){
+const emitter = (level, message, data, userId) => {
   /* .. do something with a message .. */
 };
 
-var init = function(){
+const init = () => {
   /* Initialization function */
   /* For example create a collection */
   log.collection = new Meteor.Collection("logs");
 };
 
-log.add('AdapterName', emitter, init, true);
+log.add('AdapterName', emitter, init, true, false);
 ```
 
-##### Enable/disable adapter and set its settings [*Isomorphic*]
-```javascript
+### Enable/disable adapter and set its settings [*Isomorphic*]
+```jsx
 /*
  * name    {String} - Adapter name
  * options {Object} - Settings object, accepts next properties:
