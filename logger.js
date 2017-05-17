@@ -168,7 +168,7 @@ class Logger {
 
     if (Meteor.isServer) {
       const method = {};
-      method[`${this.prefix}_logger_emit_${name}`] = (level, message, data, userId) => {
+      method[`${this.prefix}_logger_emit_${name}`] = function (level, message, data, userId) {
         check(level, String);
         check(message, Match.Optional(Match.OneOf(Number, String, null)));
         check(data, Match.Optional(Match.OneOf(String, Object, null)));
