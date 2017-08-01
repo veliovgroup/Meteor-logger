@@ -11,23 +11,23 @@ let _inst = 0;
  */
 class Logger {
   constructor() {
-    this.userId = new ReactiveVar(null);
-    this.prefix = ++_inst;
+    this.userId    = new ReactiveVar(null);
+    this.prefix    = ++_inst;
+    this._rules    = {};
+    this._emitters = [];
 
     if (Meteor.isClient) {
-      if (Package && Package['accounts-base']) {
-        Accounts.onLogin(() => {
+      const _accounts = (Package && Package['accounts-base'] && Package['accounts-base'].Accounts) ? Package['accounts-base'].Accounts : undefined;
+      if (_accounts) {
+        _accounts.onLogin(() => {
           this.userId.set(Meteor.userId());
         });
 
-        Accounts.onLogout(() => {
+        _accounts.onLogout(() => {
           this.userId.set(null);
         });
       }
     }
-
-    this._emitters = [];
-    this._rules = {};
   }
 
   /*
@@ -109,25 +109,25 @@ class Logger {
       filter: Match.Optional([String])
     });
 
+    if (!_.isArray(options.filter) || _.isEmpty(options.filter)) {
+      options.filter = ['*'];
+    }
+
     if (options.filter) {
       for (let j = 0; j < options.filter.length; j++) {
         options.filter[j] = options.filter[j].toUpperCase();
       }
     }
 
-    if (!options.filter) {
-      options.filter = ['*'];
-    }
-
-    if (!options.client) {
+    if (!_.isBoolean(options.client)) {
       options.client = false;
     }
 
-    if (!options.server) {
+    if (!_.isBoolean(options.server)) {
       options.server = true;
     }
 
-    if (!options.enable) {
+    if (!_.isBoolean(options.enable)) {
       options.enable = true;
     }
 
