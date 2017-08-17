@@ -67,6 +67,26 @@ window.onerror = (msg, url, line) => {
   }
 };
 ```
+### Catch-all Server's errors example: [*Server*]
+```jsx
+process.on('uncaughtException', function (err) {
+  log.error("Server Crashed!", err);
+  console.error(err.stack);
+  process.exit(7);
+};
+```
+### Catch-all Meteor's errors example: [*Server*]
+```jsx
+//store original Meteor error
+let originalMeteorDebug = Meteor._debug;
+Meteor._debug =(message, stack) => {
+  let error = new Error(message);
+  error.stack = stack;
+  log.error('Meteor Error!', error);
+  return originalMeteorDebug.apply(this, arguments);
+  };
+};
+```
 
 ### Register new adapter [*Isomorphic*]
 ```jsx
