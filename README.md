@@ -77,10 +77,10 @@ process.on('uncaughtException', function (err) {
 ```
 ### Catch-all Meteor's errors example: [*Server*]
 ```jsx
-//store original Meteor error
-let originalMeteorDebug = Meteor._debug;
+// store original Meteor error
+const originalMeteorDebug = Meteor._debug;
 Meteor._debug =(message, stack) => {
-  let error = new Error(message);
+  const error = new Error(message);
   error.stack = stack;
   log.error('Meteor Error!', error);
   return originalMeteorDebug.apply(this, arguments);
