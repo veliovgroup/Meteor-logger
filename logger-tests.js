@@ -131,18 +131,18 @@ Tinytest.add('LoggerMessage Instance', (test) => {
 });
 
 Tinytest.add('LoggerMessage#toString', (test) => {
-  logs.client = [];
-  logs.server = [];
-  logs.both = [];
-  logs.nowhere = [];
+  logs.both     = [];
+  logs.client   = [];
+  logs.server   = [];
+  logs.nowhere  = [];
   logs.filtered = [];
 
-  test.equal(log.info('This is message "info"', {data: 'Sample data "info"'}, 'userId "info"').toString(), '[This is message "info"] \r\nLevel: INFO; \r\nDetails: {"data":"Sample data \\"info\\""}; \r\nUserId: userId "info";');
-  test.equal(log.debug('This is message "debug"', {data: 'Sample data "debug"'}, 'userId "debug"').toString(), '[This is message "debug"] \r\nLevel: DEBUG; \r\nDetails: {"data":"Sample data \\"debug\\""}; \r\nUserId: userId "debug";');
-  test.equal(log.error('This is message "error"', {data: 'Sample data "error"'}, 'userId "error"').toString(), '[This is message "error"] \r\nLevel: ERROR; \r\nDetails: {"data":"Sample data \\"error\\""}; \r\nUserId: userId "error";');
-  test.equal(log.fatal('This is message "fatal"', {data: 'Sample data "fatal"'}, 'userId "fatal"').toString(), '[This is message "fatal"] \r\nLevel: FATAL; \r\nDetails: {"data":"Sample data \\"fatal\\""}; \r\nUserId: userId "fatal";');
-  test.equal(log.warn('This is message "warn"', {data: 'Sample data "warn"'}, 'userId "warn"').toString(), '[This is message "warn"] \r\nLevel: WARN; \r\nDetails: {"data":"Sample data \\"warn\\""}; \r\nUserId: userId "warn";');
-  test.equal(log._('This is message "_"', {data: 'Sample data "_"'}, 'userId "_"').toString(), '[This is message "_"] \r\nLevel: LOG; \r\nDetails: {"data":"Sample data \\"_\\""}; \r\nUserId: userId "_";');
+  test.equal(log.info('This is message "info"', {data: 'Sample data "info"'}, 'userId "info"').toString(), '[This is message "info"] \nLevel: INFO; \nDetails: {"data":"Sample data \\"info\\""}; \nUserId: userId "info";');
+  test.equal(log.debug('This is message "debug"', {data: 'Sample data "debug"'}, 'userId "debug"').toString(), '[This is message "debug"] \nLevel: DEBUG; \nDetails: {"data":"Sample data \\"debug\\""}; \nUserId: userId "debug";');
+  test.equal(log.error('This is message "error"', {data: 'Sample data "error"'}, 'userId "error"').toString(), '[This is message "error"] \nLevel: ERROR; \nDetails: {"data":"Sample data \\"error\\""}; \nUserId: userId "error";');
+  test.equal(log.fatal('This is message "fatal"', {data: 'Sample data "fatal"'}, 'userId "fatal"').toString(), '[This is message "fatal"] \nLevel: FATAL; \nDetails: {"data":"Sample data \\"fatal\\""}; \nUserId: userId "fatal";');
+  test.equal(log.warn('This is message "warn"', {data: 'Sample data "warn"'}, 'userId "warn"').toString(), '[This is message "warn"] \nLevel: WARN; \nDetails: {"data":"Sample data \\"warn\\""}; \nUserId: userId "warn";');
+  test.equal(log._('This is message "_"', {data: 'Sample data "_"'}, 'userId "_"').toString(), '[This is message "_"] \nLevel: LOG; \nDetails: {"data":"Sample data \\"_\\""}; \nUserId: userId "_";');
 });
 
 Tinytest.add('Logger Client Only', (test) => {
@@ -179,7 +179,7 @@ Tinytest.add('Throw', (test) => {
   } catch (e) {
     test.instanceOf(e, LoggerMessage);
     test.equal(e.level, 'FATAL');
-    test.equal(e.toString(), '[This is message "fatal"] \r\nLevel: FATAL; \r\nDetails: {"data":"Sample data \\"fatal\\""}; \r\nUserId: userId "fatal";');
+    test.equal(e.toString(), '[This is message "fatal"] \nLevel: FATAL; \nDetails: {"data":"Sample data \\"fatal\\""}; \nUserId: userId "fatal";');
   }
 });
 

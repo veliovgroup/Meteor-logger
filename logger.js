@@ -39,8 +39,9 @@ class Logger {
    * @param userId   {String} - [optional] Current user id
    * @summary Pass log's data to Server or/and Client
    */
-  _log(level, message, data = {}, user) {
+  _log(level, message, _data = {}, user) {
     const uid = user || this.userId.get();
+    let data = _data;
 
     for (let i in this._emitters) {
       if (this._rules[this._emitters[i].name] && this._rules[this._emitters[i].name].enable === true) {
@@ -51,8 +52,8 @@ class Logger {
         if (this._rules[this._emitters[i].name].allow.indexOf('*') !== -1 || this._rules[this._emitters[i].name].allow.indexOf(level) !== -1) {
           if (level === 'TRACE') {
             if (_.isString(data)) {
-              let _data = _.clone(data);
-              data = {data: _data};
+              let __data = _.clone(data);
+              data = {data: __data};
             }
             data.stackTrace = this._getStackTrace();
           }
@@ -266,7 +267,7 @@ class LoggerMessage {
     this.message = data.message;
 
     this.toString = () => {
-      return `[${this.reason}] \r\nLevel: ${this.level}; \r\nDetails: ${JSON.stringify(Logger.prototype.antiCircular(this.data))}; \r\nUserId: ${this.userId};`;
+      return `[${this.reason}] \nLevel: ${this.level}; \nDetails: ${JSON.stringify(Logger.prototype.antiCircular(this.data))}; \nUserId: ${this.userId};`;
     };
   }
 }
