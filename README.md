@@ -12,20 +12,17 @@ Features:
  - Pass logs from *Client* to *Server*;
  - Catch all browser's errors.
 
-Install:
-========
+## Installation:
 ```shell
 meteor add ostrio:logger
 ```
 
-ES6 Import:
-========
+## ES6 Import:
 ```jsx
 import { Logger } from 'meteor/ostrio:logger';
 ```
 
-Usage
-========
+## Usage
 ### Logger [*Isomorphic*]
 ```jsx
 const log = new Logger();
@@ -67,14 +64,19 @@ window.onerror = (msg, url, line) => {
   }
 };
 ```
+
 ### Catch-all Server's errors example: [*Server*]
 ```jsx
+const bound = Meteor.bindEnvironment((callback) => {callback();});
 process.on('uncaughtException', function (err) {
-  log.error("Server Crashed!", err);
-  console.error(err.stack);
-  process.exit(7);
+  bound(() => {
+    log.error("Server Crashed!", err);
+    console.error(err.stack);
+    process.exit(7);
+  });
 };
 ```
+
 ### Catch-all Meteor's errors example: [*Server*]
 ```jsx
 // store original Meteor error
@@ -89,6 +91,7 @@ Meteor._debug =(message, stack) => {
 ```
 
 ### Register new adapter [*Isomorphic*]
+*Mainly should be used by adapter developers, a.k.a. developer API.*
 ```jsx
 /* Emitter function
  * name        {String}    - Adapter name
@@ -136,8 +139,7 @@ log.rule('AdapterName', {
 });
 ```
 
-Support this project:
-======
+## Support this project:
 This project wouldn't be possible without [ostr.io](https://ostr.io).
 
 Using [ostr.io](https://ostr.io) you are not only [protecting domain names](https://ostr.io/info/domain-names-protection), [monitoring websites and servers](https://ostr.io/info/monitoring), using [Prerendering for better SEO](https://ostr.io/info/prerendering) of your JavaScript website, but support our Open Source activity, and great packages like this one could be available for free.
