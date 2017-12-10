@@ -81,7 +81,7 @@ process.on('uncaughtException', function (err) {
 ```jsx
 // store original Meteor error
 const originalMeteorDebug = Meteor._debug;
-Meteor._debug =(message, stack) => {
+Meteor._debug = (message, stack) => {
   const error = new Error(message);
   error.stack = stack;
   log.error('Meteor Error!', error);
