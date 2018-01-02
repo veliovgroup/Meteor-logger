@@ -245,7 +245,26 @@ class Logger {
    */
   _getStackTrace() {
     let obj = {};
-    Error.captureStackTrace(obj, this._getStackTrace);
+    if (_.isFunction(Error.captureStackTrace)) {
+      Error.captureStackTrace(obj, this._getStackTrace);
+    } else {
+      const err = new Error();
+      if (err.stack) {
+        obj.stack = err.stack;
+      } else {
+        obj.stack = 'Not available of not supported';
+      }
+    }
+
+    const idx = obj.stack.indexOf('_getStackTrace');
+    const idx2 = obj.stack.indexOf('_log');
+    if (idx >= 0) {
+      obj.stack = obj.stack.substring(obj.stack.indexOf('\n', idx + 1) + 1);
+    }
+    if (idx2 >= 0) {
+      obj.stack = obj.stack.substring(obj.stack.indexOf('\n', idx2 + 1) + 1);
+    }
+
     return obj.stack;
   }
 }
