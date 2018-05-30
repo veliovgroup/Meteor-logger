@@ -74,7 +74,7 @@ process.on('uncaughtException', function (err) {
     console.error(err.stack);
     process.exit(7);
   });
-};
+});
 ```
 
 ### Catch-all Meteor's errors example: [*Server*]
