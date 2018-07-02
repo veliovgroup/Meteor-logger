@@ -147,7 +147,7 @@ Tinytest.add('LoggerMessage#toString', (test) => {
   test.equal(log.fatal('This is message "fatal"', {data: 'Sample data "fatal"'}, 'userId "fatal"').toString(), '[This is message "fatal"] \nLevel: FATAL; \nDetails: {"data":"Sample data \\"fatal\\""}; \nUserId: userId "fatal";');
   test.equal(log.warn('This is message "warn"', {data: 'Sample data "warn"'}, 'userId "warn"').toString(), '[This is message "warn"] \nLevel: WARN; \nDetails: {"data":"Sample data \\"warn\\""}; \nUserId: userId "warn";');
   test.equal(log._('This is message "_"', {data: 'Sample data "_"'}, 'userId "_"').toString(), '[This is message "_"] \nLevel: LOG; \nDetails: {"data":"Sample data \\"_\\""}; \nUserId: userId "_";');
-  test.equal(log.info('This is message "info", with circular data', circular, 'userId "info"').toString(), '[This is message "info", with circular data] \nLevel: INFO; \nDetails: {"desc":"Circular data example"}; \nUserId: userId "info";');
+  test.equal(log.info('This is message "info", with circular data', circular, 'userId "info"').toString(), '[This is message "info", with circular data] \nLevel: INFO; \nDetails: {"desc":"Circular data example","circular":"[Circular]"}; \nUserId: userId "info";');
 });
 
 Tinytest.add('Logger Client Only', (test) => {
@@ -201,4 +201,8 @@ Tinytest.add('Log a Number', (test) => {
 Tinytest.add('Trace', (test) => {
   test.isTrue(_.has(log.trace(60, {data: 60}, 60).details, 'stackTrace'));
   test.isTrue(_.has(log.trace(60, {data: 60}, 60).data, 'stackTrace'));
+});
+
+Tinytest.add('Logger#antiCircular', (test) => {
+  test.equal(Logger.prototype.antiCircular(circular), { 'desc': 'Circular data example', 'circular': '[Circular]' });
 });
