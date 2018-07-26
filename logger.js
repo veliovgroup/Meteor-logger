@@ -1,7 +1,47 @@
-import { _ }            from 'meteor/underscore';
 import { Meteor }       from 'meteor/meteor';
 import { ReactiveVar }  from 'meteor/reactive-var';
 import { check, Match } from 'meteor/check';
+
+const helpers = {
+  isObject(obj) {
+    if (this.isArray(obj) || this.isFunction(obj)) {
+      return false;
+    }
+    return obj === Object(obj);
+  },
+  isArray(obj) {
+    return Array.isArray(obj);
+  },
+  isBoolean(obj) {
+    return obj === true || obj === false || Object.prototype.toString.call(obj) === '[object Boolean]';
+  },
+  isFunction(obj) {
+    return typeof obj === 'function' || false;
+  },
+  isEmpty(obj) {
+    if (this.isDate(obj)) {
+      return false;
+    }
+    if (this.isObject(obj)) {
+      return !Object.keys(obj).length;
+    }
+    if (this.isArray(obj) || this.isString(obj)) {
+      return !obj.length;
+    }
+    return false;
+  },
+  clone(obj) {
+    if (!this.isObject(obj)) return obj;
+    return this.isArray(obj) ? obj.slice() : Object.assign({}, obj);
+  }
+};
+
+const _helpers = ['String', 'Date'];
+for (let i = 0; i < _helpers.length; i++) {
+  helpers['is' + _helpers[i]] = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object ' + _helpers[i] + ']';
+  };
+}
 
 let _inst = 0;
 
@@ -43,7 +83,7 @@ class Logger {
     const uid = user || this.userId.get();
     let data = _data;
 
-    for (let i in this._emitters) {
+    for (const i in this._emitters) {
       if (this._rules[this._emitters[i].name] && this._rules[this._emitters[i].name].enable === true) {
         if (Meteor.isServer && this._rules[this._emitters[i].name].server === false || Meteor.isClient && this._rules[this._emitters[i].name].client === false) {
           continue;
@@ -51,9 +91,8 @@ class Logger {
 
         if (this._rules[this._emitters[i].name].allow.indexOf('*') !== -1 || this._rules[this._emitters[i].name].allow.indexOf(level) !== -1) {
           if (level === 'TRACE') {
-            if (_.isString(data)) {
-              let __data = _.clone(data);
-              data = {data: __data};
+            if (helpers.isString(data)) {
+              data = {data: helpers.clone(data)};
             }
             data.stackTrace = this._getStackTrace();
           }
@@ -110,7 +149,7 @@ class Logger {
       filter: Match.Optional([String])
     });
 
-    if (!_.isArray(options.filter) || _.isEmpty(options.filter)) {
+    if (!helpers.isArray(options.filter) || helpers.isEmpty(options.filter)) {
       options.filter = ['*'];
     }
 
@@ -120,15 +159,15 @@ class Logger {
       }
     }
 
-    if (!_.isBoolean(options.client)) {
+    if (!helpers.isBoolean(options.client)) {
       options.client = false;
     }
 
-    if (!_.isBoolean(options.server)) {
+    if (!helpers.isBoolean(options.server)) {
       options.server = true;
     }
 
-    if (!_.isBoolean(options.enable)) {
+    if (!helpers.isBoolean(options.enable)) {
       options.enable = true;
     }
 
@@ -155,7 +194,7 @@ class Logger {
       return;
     }
 
-    if (init && _.isFunction(init)) {
+    if (init && helpers.isFunction(init)) {
       init();
     }
 
@@ -221,7 +260,7 @@ class Logger {
   antiCircular(obj) {
     const _cache = [];
     const _wrap = (o) => {
-      for (let v in o) {
+      for (const v in o) {
         if (v !== null && typeof v === 'object') {
           if (_cache.indexOf(v) !== -1) {
             o[o[v]] = '[Circular]';
@@ -245,7 +284,7 @@ class Logger {
    */
   _getStackTrace() {
     let obj = {};
-    if (_.isFunction(Error.captureStackTrace)) {
+    if (helpers.isFunction(Error.captureStackTrace)) {
       Error.captureStackTrace(obj, this._getStackTrace);
     } else {
       const err = new Error();
