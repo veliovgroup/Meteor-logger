@@ -266,7 +266,7 @@ class Logger {
         if (cache.get(value)) {
           // circular reference found, void it
           obj[key] = '[Circular]';
-          return;
+          return void 0;
         }
         // store value in our map
         cache.set(value, true);
