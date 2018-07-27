@@ -15,6 +15,9 @@ const logs = {
   NowhereAdapter: false
 };
 
+const circular = { desc: 'Circular data example' };
+circular.circular = circular;
+
 const log = new Logger();
 const testEmitter = () => {
   return;
@@ -128,6 +131,7 @@ Tinytest.add('LoggerMessage Instance', (test) => {
   test.instanceOf(log.warn('This is message "warn"', {data: 'Sample data "warn"'}, 'userId "warn"'), LoggerMessage);
   test.instanceOf(log.trace('This is message "trace"', {data: 'Sample data "trace"'}, 'userId "trace"'), LoggerMessage);
   test.instanceOf(log._('This is message "_"', {data: 'Sample data "_"'}, 'userId "_"'), LoggerMessage);
+  test.instanceOf(log.info('This is message "info", with circular data', circular, 'userId "info"'), LoggerMessage);
 });
 
 Tinytest.add('LoggerMessage#toString', (test) => {
@@ -143,26 +147,27 @@ Tinytest.add('LoggerMessage#toString', (test) => {
   test.equal(log.fatal('This is message "fatal"', {data: 'Sample data "fatal"'}, 'userId "fatal"').toString(), '[This is message "fatal"] \nLevel: FATAL; \nDetails: {"data":"Sample data \\"fatal\\""}; \nUserId: userId "fatal";');
   test.equal(log.warn('This is message "warn"', {data: 'Sample data "warn"'}, 'userId "warn"').toString(), '[This is message "warn"] \nLevel: WARN; \nDetails: {"data":"Sample data \\"warn\\""}; \nUserId: userId "warn";');
   test.equal(log._('This is message "_"', {data: 'Sample data "_"'}, 'userId "_"').toString(), '[This is message "_"] \nLevel: LOG; \nDetails: {"data":"Sample data \\"_\\""}; \nUserId: userId "_";');
+  test.equal(log.info('This is message "info", with circular data', circular, 'userId "info"').toString(), '[This is message "info", with circular data] \nLevel: INFO; \nDetails: {"desc":"Circular data example","circular":"[Circular]"}; \nUserId: userId "info";');
 });
 
 Tinytest.add('Logger Client Only', (test) => {
   if (Meteor.isServer) {
     test.equal(logs.client.length, 0);
   } else {
-    test.equal(logs.client.length, 6);
+    test.equal(logs.client.length, 7);
   }
 });
 
 Tinytest.add('Logger Server Only', (test) => {
   if (Meteor.isServer) {
-    test.equal(logs.server.length, 6);
+    test.equal(logs.server.length, 7);
   } else {
     test.equal(logs.server.length, 0);
   }
 });
 
 Tinytest.add('Logger Isomorphic', (test) => {
-  test.equal(logs.both.length, 6);
+  test.equal(logs.both.length, 7);
 });
 
 Tinytest.add('Logger Nowhere', (test) => {
@@ -196,4 +201,8 @@ Tinytest.add('Log a Number', (test) => {
 Tinytest.add('Trace', (test) => {
   test.isTrue(_.has(log.trace(60, {data: 60}, 60).details, 'stackTrace'));
   test.isTrue(_.has(log.trace(60, {data: 60}, 60).data, 'stackTrace'));
+});
+
+Tinytest.add('Logger#antiCircular', (test) => {
+  test.equal(Logger.prototype.antiCircular(circular), { 'desc': 'Circular data example', 'circular': '[Circular]' });
 });

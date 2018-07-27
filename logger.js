@@ -81,7 +81,9 @@ class Logger {
    */
   _log(level, message, _data = {}, user) {
     const uid = user || this.userId.get();
-    let data = _data;
+
+    // sanitize circular refs before passing to emitters
+    let data = Logger.prototype.antiCircular(_data);
 
     for (const i in this._emitters) {
       if (this._rules[this._emitters[i].name] && this._rules[this._emitters[i].name].enable === true) {
@@ -258,23 +260,19 @@ class Logger {
    * @param data {Object} - Circular or any other object which needs to be non-circular
    */
   antiCircular(obj) {
-    const _cache = [];
-    const _wrap = (o) => {
-      for (const v in o) {
-        if (v !== null && typeof v === 'object') {
-          if (_cache.indexOf(v) !== -1) {
-            o[o[v]] = '[Circular]';
-            break;
-          }
-          _cache.push(v);
-          _wrap(v);
-          break;
+    const cache = new Map();
+    return JSON.parse(JSON.stringify(obj, function (key, value) {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.get(value)) {
+          // circular reference found, void it
+          obj[key] = '[Circular]';
+          return;
         }
+        // store value in our map
+        cache.set(value, true);
       }
-    };
-
-    _wrap(obj);
-    return obj;
+      return value;
+    }));
   }
 
   /*
@@ -325,7 +323,7 @@ class LoggerMessage {
     this.message = data.message;
 
     this.toString = () => {
-      return `[${this.reason}] \nLevel: ${this.level}; \nDetails: ${JSON.stringify(Logger.prototype.antiCircular(this.data))}; \nUserId: ${this.userId};`;
+      return `[${this.reason}] \nLevel: ${this.level}; \nDetails: ${JSON.stringify(this.data)}; \nUserId: ${this.userId};`;
     };
   }
 }
