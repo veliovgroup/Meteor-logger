@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:logger',
-  version: '2.0.6',
+  version: '2.0.7',
   summary: 'Logging: isomorphic driver with support of MongoDB, File (FS) and Console',
   git: 'https://github.com/VeliovGroup/Meteor-logger',
   documentation: 'README.md'
@@ -8,7 +8,7 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.4');
-  api.use(['ecmascript', 'reactive-var', 'check', 'underscore'], ['client', 'server']);
+  api.use(['ecmascript', 'reactive-var', 'check'], ['client', 'server']);
   api.mainModule('logger.js', ['client', 'server']);
 });
 
