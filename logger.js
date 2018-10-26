@@ -260,20 +260,25 @@ class Logger {
    * @param data {Object} - Circular or any other object which needs to be non-circular
    */
   antiCircular(obj) {
-    const cache = new Map();
-    return JSON.parse(JSON.stringify(obj, function (key, value) {
-      if (typeof value === 'object' && value !== null) {
-        if (cache.get(value)) {
-          // circular reference found, void it
-          obj[key] = '[Circular]';
-          return void 0;
+    return JSON.parse(JSON.stringify(obj, this._getCircularReplacer()));
+  }
+
+  /*
+   * @memberOf Logger
+   * @name getCircularReplacer
+   */
+  _getCircularReplacer() {
+    const seen = new WeakSet();
+    return (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (seen.has(value)) {
+          return '[Circular]';
         }
-        // store value in our map
-        cache.set(value, true);
+        seen.add(value);
       }
       return value;
-    }));
-  }
+    };
+  };
 
   /*
    * @memberOf Logger

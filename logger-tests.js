@@ -205,4 +205,5 @@ Tinytest.add('Trace', (test) => {
 
 Tinytest.add('Logger#antiCircular', (test) => {
   test.equal(Logger.prototype.antiCircular(circular), { 'desc': 'Circular data example', 'circular': '[Circular]' });
+  test.equal(circular.circular.desc, 'Circular data example');
 });
