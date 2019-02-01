@@ -1,30 +1,36 @@
-Isomorphic logging driver
-========
-To use this package install an adapter *separately*:
- - [File](https://atmospherejs.com/ostrio/loggerfile) - Store application log messages into the file (FS), log rotation included;
- - [Mongo](https://atmospherejs.com/ostrio/loggermongo) - Store application log messages into MongoDB;
- - [Console](https://atmospherejs.com/ostrio/loggerconsole) - Print Client's application log messages to Server's console, messages colorized for better readability.
+# Isomorphic logging driver
 
-Features:
- - 100% tests coverage;
- - Flexible log level filters, ex: write `FATAL`, `ERROR`, and `WARN` to file, `DEBUG` to console, and all other to MongoDB;
- - `userId` is automatically passed and logged if logged data is associated with logged-in user;
- - Pass logs from *Client* to *Server*;
- - Catch all browser's errors.
+To use this package install an adapter (*separately*):
+
+- [File](https://atmospherejs.com/ostrio/loggerfile) - Store application log messages into the file (FS), log rotation included;
+- [Mongo](https://atmospherejs.com/ostrio/loggermongo) - Store application log messages into MongoDB;
+- [Console](https://atmospherejs.com/ostrio/loggerconsole) - Print Client's application log messages to Server's console, messages colorized for better readability.
+
+## Features:
+
+- 👷‍♂️ 100% tests coverage;
+- 💪 Flexible log level filters, ex: write `FATAL`, `ERROR`, and `WARN` to file, `DEBUG` to console, and all other to MongoDB;
+- 👨‍💻 `userId` is automatically passed and logged, data is associated with logged-in user;
+- 📟 Pass logs from *Client* to *Server*;
+- 🕷 Catch all browser's errors.
 
 ## Installation:
+
 ```shell
 meteor add ostrio:logger
 ```
 
-## ES6 Import:
-```jsx
+### ES6 Import:
+
+```js
 import { Logger } from 'meteor/ostrio:logger';
 ```
 
 ## Usage
+
 ### Logger [*Isomorphic*]
-```jsx
+
+```js
 const log = new Logger();
 
 /* Activate adapters with default settings */
@@ -53,11 +59,12 @@ throw log.error(message, data, userId);
 ```
 
 ### Catch-all Client's errors example: [*CLIENT*]
-```jsx
+
+```js
 /* Store original window.onerror */
 const _GlobalErrorHandler = window.onerror;
 
-window.onerror = (msg, url, line) => {
+window.onerror = function (msg, url, line) {
   log.error(msg, {file: url, onLine: line});
   if (_GlobalErrorHandler) {
     _GlobalErrorHandler.apply(this, arguments);
@@ -66,11 +73,12 @@ window.onerror = (msg, url, line) => {
 ```
 
 ### Catch-all Server's errors example: [*Server*]
-```jsx
+
+```js
 const bound = Meteor.bindEnvironment((callback) => {callback();});
 process.on('uncaughtException', function (err) {
   bound(() => {
-    log.error("Server Crashed!", err);
+    log.error('Server Crashed!', err);
     console.error(err.stack);
     process.exit(7);
   });
@@ -78,7 +86,8 @@ process.on('uncaughtException', function (err) {
 ```
 
 ### Catch-all Meteor's errors example: [*Server*]
-```jsx
+
+```js
 // store original Meteor error
 const originalMeteorDebug = Meteor._debug;
 Meteor._debug = (message, stack) => {
@@ -86,13 +95,14 @@ Meteor._debug = (message, stack) => {
   error.stack = stack;
   log.error('Meteor Error!', error);
   return originalMeteorDebug.apply(this, arguments);
-  };
 };
 ```
 
 ### Register new adapter [*Isomorphic*]
+
 *Mainly should be used by adapter developers, a.k.a. developer API.*
-```jsx
+
+```js
 /* Emitter function
  * name        {String}    - Adapter name
  * emitter     {Function}  - Function called on Meteor.log...
@@ -109,19 +119,20 @@ const emitter = (level, message, data, userId) => {
 const init = () => {
   /* Initialization function */
   /* For example create a collection */
-  log.collection = new Meteor.Collection("logs");
+  log.collection = new Meteor.Collection('logs');
 };
 
 log.add('AdapterName', emitter, init, true, false);
 ```
 
 ### Enable/disable adapter and set its settings [*Isomorphic*]
-```jsx
+
+```js
 /*
  * name    {String} - Adapter name
  * options {Object} - Settings object, accepts next properties:
  * options.enable {Boolean} - Enable/disable adapter
- * options.filter {Array}   - Array of strings, accepts: 
+ * options.filter {Array}   - Array of strings, accepts:
  *                            'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', '*'
  *                            in lowercase and uppercase
  *                            default: ['*'] - Accept all
@@ -139,7 +150,20 @@ log.rule('AdapterName', {
 });
 ```
 
+## Running Tests
+
+ 1. Clone this package
+ 2. In Terminal (*Console*) go to directory where package is cloned
+ 3. Then run:
+
+### Meteor/Tinytest
+
+```shell
+meteor test-packages ./
+```
+
 ## Support this project:
+
 This project wouldn't be possible without [ostr.io](https://ostr.io).
 
 Using [ostr.io](https://ostr.io) you are not only [protecting domain names](https://ostr.io/info/domain-names-protection), [monitoring websites and servers](https://ostr.io/info/monitoring), using [Prerendering for better SEO](https://ostr.io/info/prerendering) of your JavaScript website, but support our Open Source activity, and great packages like this one could be available for free.
