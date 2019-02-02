@@ -14,6 +14,8 @@ To use this package install an adapter (*separately*):
 - 📟 Pass logs from *Client* to *Server*;
 - 🕷 Catch all browser's errors.
 
+![Meteor Logger Library](https://raw.githubusercontent.com/VeliovGroup/Meteor-logger/master/meteor-logger.jpg)
+
 ## Installation:
 
 ```shell
