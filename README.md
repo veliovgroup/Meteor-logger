@@ -161,7 +161,14 @@ log.rule('AdapterName', {
 ### Meteor/Tinytest
 
 ```shell
+# Default
 meteor test-packages ./
+
+# With custom port
+meteor test-packages ./ --port 8888
+
+# With local MongoDB and custom port
+MONGO_URL="mongodb://127.0.0.1:27017/logger-tests" meteor test-packages ./ --port 8888
 ```
 
 ## Support our open source contribution:
