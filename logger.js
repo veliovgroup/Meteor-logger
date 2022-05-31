@@ -101,14 +101,21 @@ class Logger {
    * @param userId   {String} - [optional] Current user id
    * @summary Pass log's data to Server or/and Client
    */
-  _log(level, message, _data = {}, user) {
-    const uid = user || this.userId.get();
+  _log(level, _message, _data = {}, userId) {
+    const uid = userId || this.userId.get();
     let data;
+    let message;
+
+    if (typeof _message === 'undefined') {
+      message = '';
+    } else {
+      message = _message;
+    }
 
     if (_data === null || _data === undefined){
       data = {};
     } else if (helpers.isObject(_data)) {
-      // sanitize circular refs before passing to emitters
+      // Copy and sanitize circular refs before passing to emitters
       data = Logger.prototype.antiCircular(_data);
     } else {
       data = { data: helpers.clone( _data) };
@@ -120,7 +127,7 @@ class Logger {
           continue;
         }
 
-        if (this._rules[this._emitters[i].name].allow.indexOf('*') !== -1 || this._rules[this._emitters[i].name].allow.indexOf(level) !== -1) {
+        if (this._rules[this._emitters[i].name].allow.includes('*') || this._rules[this._emitters[i].name].allow.includes(level)) {
           if (level === 'TRACE') {
             data.stackTrace = this._getStackTrace();
           }
