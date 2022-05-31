@@ -1,10 +1,12 @@
-# Isomorphic logging driver
-
-<a href="https://www.patreon.com/bePatron?u=20396046">
-  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
+[![support](https://img.shields.io/badge/support-GitHub-white)](https://github.com/sponsors/dr-dimitru)
+[![support](https://img.shields.io/badge/support-PayPal-white)](https://paypal.me/veliovgroup)
+<a href="https://ostr.io/info/built-by-developers-for-developers">
+  <img src="https://ostr.io/apple-touch-icon-60x60.png" height="20">
 </a>
 
-To use this package install an adapter (*separately*):
+# Isomorphic logging driver
+
+Logger driver for Meteor.js with different adapters. To use this package install an adapter (*separately*):
 
 - [File](https://atmospherejs.com/ostrio/loggerfile) - Store application log messages into the file (FS), log rotation included;
 - [Mongo](https://atmospherejs.com/ostrio/loggermongo) - Store application log messages into MongoDB;
@@ -33,6 +35,8 @@ import { Logger } from 'meteor/ostrio:logger';
 ```
 
 ## Usage
+
+Initiate a logger and pass it into the adapter constructor
 
 ### Logger [*Isomorphic*]
 
@@ -109,7 +113,10 @@ Meteor._debug = (message, stack) => {
 *Mainly should be used by adapter developers, a.k.a. developer API.*
 
 ```js
-/* Emitter function
+/**
+ * Logger#add() — register new adapter
+ * 
+ *  Emitter function
  * name        {String}    - Adapter name
  * emitter     {Function}  - Function called on Meteor.log...
  * init        {Function}  - Adapter initialization function
@@ -134,7 +141,9 @@ log.add('AdapterName', emitter, init, true, false);
 ### Enable/disable adapter and set its settings [*Isomorphic*]
 
 ```js
-/*
+/**
+ * Logger#rule() — register adapter default rules
+ *
  * name    {String} - Adapter name
  * options {Object} - Settings object, accepts next properties:
  * options.enable {Boolean} - Enable/disable adapter
@@ -177,5 +186,6 @@ MONGO_URL="mongodb://127.0.0.1:27017/logger-tests" meteor test-packages ./ --por
 
 ## Support our open source contribution:
 
-- [Become a patron](https://www.patreon.com/bePatron?u=20396046) — support my open source contributions with monthly donation
+- [Sponsor via GitHub](https://github.com/sponsors/dr-dimitru)
+- [Support via PayPal](https://paypal.me/veliovgroup)
 - Use [ostr.io](https://ostr.io) — [Monitoring](https://snmp-monitoring.com), [Analytics](https://ostr.io/info/web-analytics), [WebSec](https://domain-protection.info), [Web-CRON](https://web-cron.info) and [Pre-rendering](https://prerendering.com) for a website
