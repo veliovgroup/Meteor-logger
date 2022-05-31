@@ -1,5 +1,5 @@
-import { Meteor }       from 'meteor/meteor';
-import { ReactiveVar }  from 'meteor/reactive-var';
+import { Meteor } from 'meteor/meteor';
+import { ReactiveVar } from 'meteor/reactive-var';
 import { check, Match } from 'meteor/check';
 
 const helpers = {
@@ -38,9 +38,31 @@ const helpers = {
 
 const _helpers = ['String', 'Date'];
 for (let i = 0; i < _helpers.length; i++) {
-  helpers['is' + _helpers[i]] = function (obj) {
-    return Object.prototype.toString.call(obj) === '[object ' + _helpers[i] + ']';
+  helpers[`is${_helpers[i]}`] = function (obj) {
+    return Object.prototype.toString.call(obj) === `[object ${_helpers[i]}]`;
   };
+}
+
+/*
+ * @class LoggerMessage
+ * @param data {Object}
+ * @summary Construct message object, ready to be thrown and stringified
+ */
+class LoggerMessage {
+  constructor(data) {
+    this.data = data.data;
+    this.user = data.user;
+    this.level = data.level;
+    this.error = data.error;
+    this.userId = data.userId;
+    this.reason = data.reason;
+    this.details = data.details;
+    this.message = data.message;
+
+    this.toString = () => {
+      return `[${this.reason}] \nLevel: ${this.level}; \nDetails: ${JSON.stringify(this.data)}; \nUserId: ${this.userId};`;
+    };
+  }
 }
 
 let _inst = 0;
@@ -51,9 +73,9 @@ let _inst = 0;
  */
 class Logger {
   constructor() {
-    this.userId    = new ReactiveVar(null);
-    this.prefix    = ++_inst;
-    this._rules    = {};
+    this.userId = new ReactiveVar(null);
+    this.prefix = ++_inst;
+    this._rules = {};
     this._emitters = [];
 
     if (Meteor.isClient) {
@@ -75,15 +97,22 @@ class Logger {
    * @name _log
    * @param level    {String} - Log level Accepts 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', 'LOG' and '*'
    * @param message  {String} - Text human-readable message
-   * @param data     {Object} - [optional] Any additional info as object
+   * @param data     {Object|String} - [optional] Any additional info as object
    * @param userId   {String} - [optional] Current user id
    * @summary Pass log's data to Server or/and Client
    */
   _log(level, message, _data = {}, user) {
     const uid = user || this.userId.get();
+    let data;
 
-    // sanitize circular refs before passing to emitters
-    let data = Logger.prototype.antiCircular(_data);
+    if (_data === null || _data === undefined){
+      data = {};
+    } else if (helpers.isObject(_data)) {
+      // sanitize circular refs before passing to emitters
+      data = Logger.prototype.antiCircular(_data);
+    } else {
+      data = { data: helpers.clone( _data) };
+    }
 
     for (const i in this._emitters) {
       if (this._rules[this._emitters[i].name] && this._rules[this._emitters[i].name].enable === true) {
@@ -93,9 +122,6 @@ class Logger {
 
         if (this._rules[this._emitters[i].name].allow.indexOf('*') !== -1 || this._rules[this._emitters[i].name].allow.indexOf(level) !== -1) {
           if (level === 'TRACE') {
-            if (helpers.isString(data)) {
-              data = {data: helpers.clone(data)};
-            }
             data.stackTrace = this._getStackTrace();
           }
 
@@ -308,28 +334,6 @@ class Logger {
     }
 
     return obj.stack;
-  }
-}
-
-/*
- * @class LoggerMessage
- * @param data {Object}
- * @summary Construct message object, ready to be thrown and stringified
- */
-class LoggerMessage {
-  constructor(data) {
-    this.data    = data.data;
-    this.user    = data.user;
-    this.level   = data.level;
-    this.error   = data.error;
-    this.userId  = data.userId;
-    this.reason  = data.reason;
-    this.details = data.details;
-    this.message = data.message;
-
-    this.toString = () => {
-      return `[${this.reason}] \nLevel: ${this.level}; \nDetails: ${JSON.stringify(this.data)}; \nUserId: ${this.userId};`;
-    };
   }
 }
 
