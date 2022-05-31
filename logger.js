@@ -43,7 +43,7 @@ for (let i = 0; i < _helpers.length; i++) {
   };
 }
 
-/*
+/**
  * @class LoggerMessage
  * @param data {Object}
  * @summary Construct message object, ready to be thrown and stringified
@@ -67,7 +67,7 @@ class LoggerMessage {
 
 let _inst = 0;
 
-/*
+/**
  * @class Logger
  * @summary Extend-able Logger class
  */
@@ -92,7 +92,7 @@ class Logger {
     }
   }
 
-  /*
+  /**
    * @memberOf Logger
    * @name _log
    * @param level    {String} - Log level Accepts 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', 'LOG' and '*'
@@ -154,7 +154,7 @@ class Logger {
     });
   }
 
-  /*
+  /**
    * @memberOf Logger
    * @name rule
    * @param name    {String} - Adapter name
@@ -207,7 +207,7 @@ class Logger {
     };
   }
 
-  /*
+  /**
    * @memberOf Logger
    * @name add
    * @param name        {String}    - Adapter name
@@ -247,7 +247,7 @@ class Logger {
     }
   }
 
-  /*
+  /**
    * @memberOf Logger
    * @name info; debug; error; fatal; warn; trace; log; _
    * @param message {String} - Any text message
@@ -280,7 +280,7 @@ class Logger {
     return this._log('LOG', message, data, userId);
   }
 
-  /*
+  /**
    * @memberOf Logger
    * @name antiCircular
    * @param data {Object} - Circular or any other object which needs to be non-circular
@@ -289,7 +289,7 @@ class Logger {
     return JSON.parse(JSON.stringify(obj, this._getCircularReplacer()));
   }
 
-  /*
+  /**
    * @memberOf Logger
    * @name getCircularReplacer
    */
@@ -306,7 +306,7 @@ class Logger {
     };
   }
 
-  /*
+  /**
    * @memberOf Logger
    * @name _getStackTrace
    * @summary Prepare stack trace message
