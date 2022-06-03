@@ -2,7 +2,7 @@ Package.describe({
   name: 'ostrio:logger',
   version: '2.1.1',
   summary: 'Logging: isomorphic driver with support of MongoDB, File (FS) and Console',
-  git: 'https://github.com/VeliovGroup/Meteor-logger',
+  git: 'https://github.com/veliovgroup/Meteor-logger',
   documentation: 'README.md'
 });
 

@@ -20,7 +20,7 @@ Logger driver for Meteor.js with different adapters. To use this package install
 - 📟 Pass logs from *Client* to *Server*;
 - 🕷 Catch all browser's errors.
 
-![Meteor Logger Library](https://raw.githubusercontent.com/VeliovGroup/Meteor-logger/master/meteor-logger.jpg)
+![Meteor Logger Library](https://raw.githubusercontent.com/veliovgroup/Meteor-logger/master/meteor-logger.jpg)
 
 ## Installation:
 
