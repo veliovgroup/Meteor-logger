@@ -1,4 +1,3 @@
-import { _ }                     from 'meteor/underscore';
 import { Meteor }                from 'meteor/meteor';
 import { Logger, LoggerMessage } from 'meteor/ostrio:logger';
 
@@ -199,8 +198,8 @@ Tinytest.add('Log a Number', (test) => {
 });
 
 Tinytest.add('Trace', (test) => {
-  test.isTrue(_.has(log.trace(60, {data: 60}, 60).details, 'stackTrace'));
-  test.isTrue(_.has(log.trace(60, {data: 60}, 60).data, 'stackTrace'));
+  test.isTrue(Object.prototype.hasOwnProperty.call(log.trace(60, {data: 60}, 60).details, 'stackTrace'));
+  test.isTrue(Object.prototype.hasOwnProperty.call(log.trace(60, {data: 60}, 60).data, 'stackTrace'));
 });
 
 Tinytest.add('Logger#antiCircular', (test) => {
