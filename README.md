@@ -28,6 +28,19 @@ Logger driver for Meteor.js with different adapters. To use this package install
 meteor add ostrio:logger
 ```
 
+### Compatibility
+
+- Meteor **2.14–3.4** (see `package.js` `versionsFrom`)
+- Meteor 3 requires `ostrio:logger` **≥ 2.2.0**
+
+### Agent skill
+
+```bash
+npx skills add veliovgroup/Meteor-logger --skill meteor-logger -g
+```
+
+Covers `ostrio:logger` and all adapters (`loggerconsole`, `loggerfile`, `loggermongo`).
+
 ### ES6 Import:
 
 ```js
@@ -132,7 +145,7 @@ const emitter = (level, message, data, userId) => {
 const init = () => {
   /* Initialization function */
   /* For example create a collection */
-  log.collection = new Meteor.Collection('logs');
+  log.collection = new Mongo.Collection('logs');
 };
 
 log.add('AdapterName', emitter, init, true, false);
