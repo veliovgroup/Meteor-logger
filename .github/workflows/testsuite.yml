@@ -7,9 +7,20 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    name: tests
+    name: tests (${{ matrix.meteor }})
     runs-on: ubuntu-latest
     # needs: [lintcode,lintstyle,lintdocs] # we could add prior jobs for linting, if desired
+    strategy:
+      fail-fast: false
+      matrix:
+        meteor:
+          - '2.14'
+          - '2.15'
+          - '2.16'
+          - '3.2'
+          - '3.3.1'
+          - '3.4'
+
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -17,7 +28,7 @@ jobs:
       - name: Setup meteor
         uses: meteorengineer/setup-meteor@v2
         with:
-          meteor-release: '3.1'
+          meteor-release: ${{ matrix.meteor }}
 
       - name: Install mTest
         run: |
@@ -26,4 +37,4 @@ jobs:
       - name: Run Tests
         run: |
           export NODE_TLS_REJECT_UNAUTHORIZED=0
-          mtest --package ./ --once 3.1
+          mtest --package ./ --once ${{ matrix.meteor }}
