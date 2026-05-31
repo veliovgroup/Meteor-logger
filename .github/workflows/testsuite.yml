@@ -12,7 +12,7 @@ jobs:
     # needs: [lintcode,lintstyle,lintdocs] # we could add prior jobs for linting, if desired
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Setup meteor
         uses: meteorengineer/setup-meteor@v2
@@ -25,8 +25,5 @@ jobs:
 
       - name: Run Tests
         run: |
-          # Fix using old versions of Meteor
           export NODE_TLS_REJECT_UNAUTHORIZED=0
-
           mtest --package ./ --once 3.1
-
