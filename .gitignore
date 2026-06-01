@@ -1,6 +1,12 @@
 .npm
+node_modules/
+npm-debug.log*
+
 .DS_Store
 .eslintcache
-node_modules
-npm-debug.log*
+.cursor/
+.claude/
+
+*.tgz
+
 /docs/superpowers

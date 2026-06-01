@@ -1,0 +1,32 @@
+# Tests (Package.onTest adds these explicitly)
+*-tests.js
+
+# Repo / CI / dev tooling
+.github/
+.gitignore
+.npm/
+.meteorignore
+.npmignore
+.versions
+.DS_Store
+.eslintcache
+node_modules/
+npm-debug.log*
+
+# Docs (README kept — Package.describe documentation)
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+HISTORY.md
+LICENSE
+
+# Editor / agent
+.cursor/
+.claude/
+
+# Design assets (README uses raw.githubusercontent.com URLs)
+meteor-logger.jpg
+
+# Not part of the isopack
+docs/
+skills/
