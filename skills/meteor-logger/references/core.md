@@ -57,7 +57,7 @@ Logger sanitizes circular objects in `data` before adapters receive them (`[Circ
 ## Meteor 3
 
 - Package `ostrio:logger` ≥ **2.2.0**
-- Supported Meteor releases: **2.14, 2.15, 2.16, 3.2, 3.3.1, 3.4**
+- Supported Meteor releases: **2.14, 2.15, 2.16, 3.2, 3.3.1, 3.4.**
 - In custom adapter `init`, use `new Mongo.Collection('name')` — not `Meteor.Collection`
 
 ## Testing locally

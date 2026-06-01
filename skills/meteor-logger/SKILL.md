@@ -23,7 +23,7 @@ meteor add ostrio:loggerfile      # optional
 meteor add ostrio:loggermongo     # optional
 ```
 
-**Meteor 3:** use `ostrio:logger` ≥ 2.2.0. Tested on Meteor 2.14–3.4.
+**Meteor 3:** use `ostrio:logger` ≥ 2.2.0. Tested on Meteor 2.14–3.4.*.
 
 ## Quick start
 

@@ -24,7 +24,7 @@ mongoAdapter.enable(rule);
 
 Default `format` returns `opts` as-is. Non-object return throws `Meteor.Error(400, ...)`.
 
-On the server, Meteor 3+ uses `insertAsync()` via `Meteor.wrapAsync` so each log line is persisted before `_log` returns; Meteor 2.x uses sync `collection.insert()`.
+On the server, Meteor 3+ uses fire-and-forget `insertAsync()` (sync log API unchanged); Meteor 2.x uses blocking `collection.insert()`. Branch on `Meteor.release.startsWith('METEOR@3')`, not `insertAsync` presence (M2.16 may expose async stubs). Test delays: 256/512ms (M2), 1500/3000ms (M3).
 
 ## enable(rule)
 
